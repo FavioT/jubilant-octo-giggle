@@ -157,6 +157,25 @@ app.get('/getclass/:name', function (req, res, next) {
 });
 
 // 3.C
+app.post('/inscription', function (req, res, next) {
+    var name = req.param('id');
+    var file = req.param('name');
+
+    pg.connect(connectionString,function(err,client,done) {
+       if(err){
+           console.log("not able to get connection "+ err);
+           res.status(400).send(err);
+       }
+       client.query("INSERT INTO inscripciones_curso VALUES ((SELECT idpersona from alumno WHERE legajo = " + name + "), (SELECT identificador from curso WHERE nombre = '" + file + "'), (SELECT NOW()), 0);", function(err,result) {
+           done(); // closing the connection;
+           if(err){
+               console.log(err);
+               res.status(400).send(err);
+           }
+           res.status(200).send(result.rows);
+       });
+    });
+});
 
 app.listen(4000, function () {
     console.log('Server is running.. on Port 4000');
