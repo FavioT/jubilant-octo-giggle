@@ -77,13 +77,14 @@ app.post('/registerstudent', function (req, res, next) {
     var doc = req.param('doc');
     var lastname = req.param('lastname');
     var birthday = req.param('birthday');
-    
+    var id = req.param('id');
+
     pg.connect(connectionString,function(err,client,done) {
        if(err){
            console.log("not able to get connection "+ err);
            res.status(400).send(err);
        }
-       client.query("INSERT INTO persona VALUES (8,'DNI', " + doc +", '"+ name + "', '" + lastname + "', '" + birthday + "');", function(err,result) {
+       client.query("INSERT INTO persona VALUES (" + id + ",'DNI', " + doc +", '"+ name + "', '" + lastname + "', '" + birthday + "');", function(err,result) {
            done(); // closing the connection;
            if(err){
                console.log(err);
@@ -95,13 +96,19 @@ app.post('/registerstudent', function (req, res, next) {
 });
 
 // 3.A
-app.get('/update', function (req, res, next) {
+app.post('/update', function (req, res, next) {
+    var name = req.param('name');
+    var doc = req.param('doc');
+    var lastname = req.param('lastname');
+    var birthday = req.param('birthday');
+    var id = req.param('id');
+
     pg.connect(connectionString,function(err,client,done) {
        if(err){
            console.log("not able to get connection "+ err);
            res.status(400).send(err);
        }
-       client.query("UPDATE persona SET nombre = 'John', apellido = 'Doe' WHERE identificador = 6;", function(err,result) {
+       client.query("UPDATE persona SET nombre = '" + name +"', apellido = '" + lastname + "', documento = '"+ doc +"', fechanac = '" + birthday + "' WHERE identificador = "+ id +";", function(err,result) {
            done(); // closing the connection;
            if(err){
                console.log(err);
